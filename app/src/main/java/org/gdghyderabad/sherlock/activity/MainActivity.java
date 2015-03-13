@@ -119,6 +119,7 @@ public class MainActivity extends ActionBarActivity {
             mResultsList.clear();
             mResultsList.addAll(searchResults.books);
             mAdapter.notifyDataSetChanged();
+            mSearchResultsListView.setSelection(0);
         }
     }
 
