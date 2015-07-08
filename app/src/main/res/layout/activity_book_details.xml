@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:onClick="onShowPreviousBook"
-                android:text="Show Prev Book"
+                android:text="@string/show_prev"
                 app:visibilityOnIndex="@{bookDetails.index}" />
 
             <Button
@@ -82,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:onClick="onShowNextBook"
-                android:text="Show Next Book" />
+                android:text="@string/show_next" />
         </RelativeLayout>
 
     </RelativeLayout>
