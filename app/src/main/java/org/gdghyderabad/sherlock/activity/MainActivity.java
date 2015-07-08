@@ -1,22 +1,31 @@
 package org.gdghyderabad.sherlock.activity;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.databinding.BindingAdapter;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.gdghyderabad.sherlock.R;
-import org.gdghyderabad.sherlock.adapter.SearchResultsAdapter;
+import org.gdghyderabad.sherlock.adapter.BooksRecyclerAdapter;
 import org.gdghyderabad.sherlock.api.GoogleBooksService;
+import org.gdghyderabad.sherlock.databinding.ActivityMainBinding;
+import org.gdghyderabad.sherlock.listener.RecyclerItemClickListener;
 import org.gdghyderabad.sherlock.model.Book;
 import org.gdghyderabad.sherlock.model.SearchResults;
 
@@ -41,18 +50,28 @@ public class MainActivity extends ActionBarActivity {
     @InjectView(R.id.progress_bar)
     protected ProgressBar mProgressBar;
 
-    @InjectView(R.id.search_results_list_view)
-    protected ListView mSearchResultsListView;
+    @InjectView(R.id.search_results_recycler_view)
+    protected RecyclerView mSearchResultsRecyclerView;
 
     private GoogleBooksService mGoogleBooksService;
-    private SearchResultsAdapter mAdapter;
+    private BooksRecyclerAdapter mBooksRecyclerAdapter;
     private List<Book> mResultsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         ButterKnife.inject(this);
+        mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mSearchResultsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(View view, int position, float x, float y) {
+                Intent intent = new Intent(MainActivity.this, BookDetailsActivity.class);
+                intent.putExtra(BookDetailsActivity.BOOK, mResultsList.get(position));
+                startActivity(intent);
+            }
+        }));
         init();
     }
 
@@ -111,15 +130,16 @@ public class MainActivity extends ActionBarActivity {
 
         displayProgress(false);
 
-        if (mAdapter == null) {
-            mAdapter = new SearchResultsAdapter(this, 0, searchResults.books);
-            mSearchResultsListView.setAdapter(mAdapter);
+        if (mBooksRecyclerAdapter == null) {
+            //mAdapter = new SearchResultsAdapter(this, 0, searchResults.books);
+            //mSearchResultsRecyclerView.setAdapter(mAdapter);
+            mBooksRecyclerAdapter = new BooksRecyclerAdapter(searchResults.books);
+            mSearchResultsRecyclerView.setAdapter(mBooksRecyclerAdapter);
             mResultsList = searchResults.books;
         } else {
             mResultsList.clear();
             mResultsList.addAll(searchResults.books);
-            mAdapter.notifyDataSetChanged();
-            mSearchResultsListView.setSelection(0);
+            mBooksRecyclerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -130,8 +150,8 @@ public class MainActivity extends ActionBarActivity {
 
         if (mResultsList != null) {
             mResultsList.clear();
-            if (mAdapter != null) {
-                mAdapter.notifyDataSetChanged();
+            if (mBooksRecyclerAdapter != null) {
+                mBooksRecyclerAdapter.notifyDataSetChanged();
             }
         }
         if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
@@ -143,10 +163,10 @@ public class MainActivity extends ActionBarActivity {
 
     private void displayProgress(boolean show) {
         if (show) {
-            mSearchResultsListView.setVisibility(View.GONE);
+            mSearchResultsRecyclerView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
         } else {
-            mSearchResultsListView.setVisibility(View.VISIBLE);
+            mSearchResultsRecyclerView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
         }
     }
@@ -162,4 +182,8 @@ public class MainActivity extends ActionBarActivity {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    @BindingAdapter("bind:imageUrl")
+    public static void loadImage(ImageView imageView, String url){
+        Picasso.with(imageView.getContext()).load(url).into(imageView);
+    }
 }

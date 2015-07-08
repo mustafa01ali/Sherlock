@@ -1,0 +1,55 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="book"
+            type="org.gdghyderabad.sherlock.model.Book" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:id="@+id/book_title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_medium"
+            tools:text="@{book.volumeInfo.title}" />
+
+        <TextView
+            android:id="@+id/book_authors_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textStyle="italic"
+            android:text="@{book.volumeInfo.authors[0]}"
+            android:textSize="@dimen/text_size_normal"
+            tools:text="Author name" />
+
+        <TextView
+            android:id="@+id/book_publisher_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:layout_gravity="center_vertical"
+            android:text="@{book.volumeInfo.publisher}"
+            android:textSize="@dimen/text_size_small"
+            tools:text="Publisher name" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            app:imageUrl="@{book.volumeInfo.imageLinks.thumbnail}"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</layout>
