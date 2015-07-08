@@ -1,10 +1,16 @@
 package org.gdghyderabad.sherlock.model;
 
-import java.io.Serializable;
-
 /**
  * Created by Mustafa Ali on 11/03/15.
  */
-public class Book implements Serializable{
+public class Book {
     public VolumeInfo volumeInfo;
+
+    public VolumeInfo getVolumeInfo() {
+        return volumeInfo;
+    }
+
+    public void setVolumeInfo(VolumeInfo volumeInfo) {
+        this.volumeInfo = volumeInfo;
+    }
 }

@@ -1,15 +1,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="book"
-            type="org.gdghyderabad.sherlock.model.Book" />
+            name="bookDetails"
+            type="org.gdghyderabad.sherlock.Binding.BookDetails" />
+
+        <variable
+            name="bookDetailActivity"
+            type="org.gdghyderabad.sherlock.activity.BookDetailsActivity" />
+
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -21,35 +26,64 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textStyle="bold"
+            android:text="@{bookDetails.volumeInfo.title}"
             android:textSize="@dimen/text_size_medium"
-            tools:text="@{book.volumeInfo.title}" />
+            android:textStyle="bold"
+            tools:text="Book Title" />
 
         <TextView
             android:id="@+id/book_authors_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/book_title_textview"
             android:layout_gravity="center_vertical"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textStyle="italic"
-            android:text="@{book.volumeInfo.authors[0]}"
+            android:text="@{bookDetails.volumeInfo.authors[0]}"
             android:textSize="@dimen/text_size_normal"
+            android:textStyle="italic"
             tools:text="Author name" />
 
         <TextView
             android:id="@+id/book_publisher_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing_normal"
+            android:layout_below="@+id/book_authors_textview"
             android:layout_gravity="center_vertical"
-            android:text="@{book.volumeInfo.publisher}"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:text="@{bookDetails.volumeInfo.publisher}"
             android:textSize="@dimen/text_size_small"
             tools:text="Publisher name" />
 
+
         <ImageView
             android:layout_width="match_parent"
-            app:imageUrl="@{book.volumeInfo.imageLinks.thumbnail}"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/book_publisher_textview"
+            app:imageUrl="@{bookDetails.volumeInfo.imageLinks.thumbnail}" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="@dimen/spacing_normal">
+
+            <Button
+                android:id="@+id/show_previous_book_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:onClick="onShowPreviousBook"
+                android:text="Show Prev Book"
+                app:visibilityOnIndex="@{bookDetails.index}" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:onClick="onShowNextBook"
+                android:text="Show Next Book" />
+        </RelativeLayout>
+
+    </RelativeLayout>
 </layout>

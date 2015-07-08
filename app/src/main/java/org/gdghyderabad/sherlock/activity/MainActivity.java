@@ -2,7 +2,6 @@ package org.gdghyderabad.sherlock.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.databinding.BindingAdapter;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -14,23 +13,17 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
 import org.gdghyderabad.sherlock.R;
 import org.gdghyderabad.sherlock.adapter.BooksRecyclerAdapter;
 import org.gdghyderabad.sherlock.api.GoogleBooksService;
+import org.gdghyderabad.sherlock.app.SherlockApplication;
 import org.gdghyderabad.sherlock.databinding.ActivityMainBinding;
 import org.gdghyderabad.sherlock.listener.RecyclerItemClickListener;
-import org.gdghyderabad.sherlock.model.Book;
 import org.gdghyderabad.sherlock.model.SearchResults;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,7 +48,6 @@ public class MainActivity extends ActionBarActivity {
 
     private GoogleBooksService mGoogleBooksService;
     private BooksRecyclerAdapter mBooksRecyclerAdapter;
-    private List<Book> mResultsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +60,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onItemClick(View view, int position, float x, float y) {
                 Intent intent = new Intent(MainActivity.this, BookDetailsActivity.class);
-                intent.putExtra(BookDetailsActivity.BOOK, mResultsList.get(position));
+                intent.putExtra(BookDetailsActivity.BOOK_POSITION, position);
                 startActivity(intent);
             }
         }));
@@ -135,10 +127,10 @@ public class MainActivity extends ActionBarActivity {
             //mSearchResultsRecyclerView.setAdapter(mAdapter);
             mBooksRecyclerAdapter = new BooksRecyclerAdapter(searchResults.books);
             mSearchResultsRecyclerView.setAdapter(mBooksRecyclerAdapter);
-            mResultsList = searchResults.books;
+            ((SherlockApplication) getApplication()).setBooks(searchResults.books);
         } else {
-            mResultsList.clear();
-            mResultsList.addAll(searchResults.books);
+            ((SherlockApplication) getApplication()).getBooks().clear();
+            ((SherlockApplication) getApplication()).getBooks().addAll(searchResults.books);
             mBooksRecyclerAdapter.notifyDataSetChanged();
         }
     }
@@ -148,8 +140,8 @@ public class MainActivity extends ActionBarActivity {
 
         displayProgress(false);
 
-        if (mResultsList != null) {
-            mResultsList.clear();
+        if (((SherlockApplication) getApplication()).getBooks() != null) {
+            ((SherlockApplication) getApplication()).getBooks().clear();
             if (mBooksRecyclerAdapter != null) {
                 mBooksRecyclerAdapter.notifyDataSetChanged();
             }
@@ -180,10 +172,5 @@ public class MainActivity extends ActionBarActivity {
             view = new View(this);
         }
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    @BindingAdapter("bind:imageUrl")
-    public static void loadImage(ImageView imageView, String url){
-        Picasso.with(imageView.getContext()).load(url).into(imageView);
     }
 }
