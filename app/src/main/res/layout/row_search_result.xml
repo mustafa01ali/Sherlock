@@ -20,6 +20,7 @@
         android:paddingRight="@dimen/spacing_large"
         android:paddingTop="@dimen/spacing_normal">
 
+        <!-- Add Your Existing layout here-->
         <ImageView
             android:id="@+id/book_thumbnail_imageview"
             android:layout_width="80dp"
@@ -41,7 +42,8 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textSize="@dimen/text_size_medium"
-                tools:text="@{book.volumeInfo.title}" />
+                android:text="@{book.volumeInfo.title}"
+                tools:text="Title" />
 
             <TextView
                 android:id="@+id/book_authors_textview"

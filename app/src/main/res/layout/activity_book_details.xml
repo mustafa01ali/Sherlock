@@ -18,12 +18,25 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"
+        android:paddingTop="@dimen/spacing_normal">
+
+        <ImageView
+            android:id="@+id/book_thumbnail_imageview"
+            android:layout_width="120dp"
+            android:layout_height="160dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
+            app:imageUrl="@{bookDetails.volumeInfo.imageLinks.thumbnail}" />
 
         <TextView
             android:id="@+id/book_title_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/book_thumbnail_imageview"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@{bookDetails.volumeInfo.title}"
@@ -37,6 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/book_title_textview"
             android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/book_thumbnail_imageview"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="@{bookDetails.volumeInfo.authors[0]}"
@@ -50,17 +64,19 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/book_authors_textview"
             android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/book_thumbnail_imageview"
             android:paddingBottom="@dimen/spacing_normal"
             android:text="@{bookDetails.volumeInfo.publisher}"
             android:textSize="@dimen/text_size_small"
             tools:text="Publisher name" />
 
-
-        <ImageView
+        <TextView
+            android:id="@+id/book_description"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/book_publisher_textview"
-            app:imageUrl="@{bookDetails.volumeInfo.imageLinks.thumbnail}" />
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/book_thumbnail_imageview"
+            android:text="@{bookDetails.volumeInfo.description}" />
+
 
         <RelativeLayout
             android:layout_width="match_parent"

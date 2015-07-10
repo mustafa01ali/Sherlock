@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -35,7 +35,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     @InjectView(R.id.search_edit_text)
     protected EditText mSearchEditText;
@@ -54,6 +54,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         ButterKnife.inject(this);
+        mSearchResultsRecyclerView = (RecyclerView) findViewById(R.id.search_results_recycler_view);
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mSearchResultsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
 
@@ -123,10 +124,10 @@ public class MainActivity extends ActionBarActivity {
         displayProgress(false);
 
         if (mBooksRecyclerAdapter == null) {
-            //mAdapter = new SearchResultsAdapter(this, 0, searchResults.books);
-            //mSearchResultsRecyclerView.setAdapter(mAdapter);
             mBooksRecyclerAdapter = new BooksRecyclerAdapter(searchResults.books);
             mSearchResultsRecyclerView.setAdapter(mBooksRecyclerAdapter);
+            //Without Binder Adapter
+            //mSearchResultsRecyclerView.setAdapter(new BooksRecyclerWithoutBinderAdapter(searchResults.books));
             ((SherlockApplication) getApplication()).setBooks(searchResults.books);
         } else {
             ((SherlockApplication) getApplication()).getBooks().clear();
