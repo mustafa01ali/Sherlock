@@ -1,4 +1,4 @@
-package org.gdghyderabad.sherlock.adapter;
+package com.mutualmobile.example.databinding.adapter;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.gdghyderabad.sherlock.BR;
-import org.gdghyderabad.sherlock.R;
-import org.gdghyderabad.sherlock.model.Book;
+import com.mutualmobile.example.databinding.BR;
+import com.mutualmobile.example.databinding.R;
+import com.mutualmobile.example.databinding.model.Book;
 
 import java.util.List;
 

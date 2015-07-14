@@ -1,4 +1,4 @@
-package org.gdghyderabad.sherlock.adapter;
+package com.mutualmobile.example.databinding.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,10 +7,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.mutualmobile.example.databinding.R;
+import com.mutualmobile.example.databinding.model.Book;
 import com.squareup.picasso.Picasso;
-
-import org.gdghyderabad.sherlock.R;
-import org.gdghyderabad.sherlock.model.Book;
 
 import java.util.List;
 

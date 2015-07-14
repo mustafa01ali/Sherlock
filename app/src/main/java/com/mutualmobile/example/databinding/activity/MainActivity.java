@@ -1,4 +1,4 @@
-package org.gdghyderabad.sherlock.activity;
+package com.mutualmobile.example.databinding.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,13 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.gdghyderabad.sherlock.R;
-import org.gdghyderabad.sherlock.adapter.BooksRecyclerAdapter;
-import org.gdghyderabad.sherlock.api.GoogleBooksService;
-import org.gdghyderabad.sherlock.app.SherlockApplication;
-import org.gdghyderabad.sherlock.databinding.ActivityMainBinding;
-import org.gdghyderabad.sherlock.listener.RecyclerItemClickListener;
-import org.gdghyderabad.sherlock.model.SearchResults;
+import com.mutualmobile.example.databinding.R;
+import com.mutualmobile.example.databinding.adapter.BooksRecyclerAdapter;
+import com.mutualmobile.example.databinding.api.GoogleBooksService;
+import com.mutualmobile.example.databinding.app.DataBindingApplication;
+import com.mutualmobile.example.databinding.databinding.ActivityMainBinding;
+import com.mutualmobile.example.databinding.listener.RecyclerItemClickListener;
+import com.mutualmobile.example.databinding.model.SearchResults;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -128,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
             mSearchResultsRecyclerView.setAdapter(mBooksRecyclerAdapter);
             //Without Binder Adapter
             //mSearchResultsRecyclerView.setAdapter(new BooksRecyclerWithoutBinderAdapter(searchResults.books));
-            ((SherlockApplication) getApplication()).setBooks(searchResults.books);
+            ((DataBindingApplication) getApplication()).setBooks(searchResults.books);
         } else {
-            ((SherlockApplication) getApplication()).getBooks().clear();
-            ((SherlockApplication) getApplication()).getBooks().addAll(searchResults.books);
+            ((DataBindingApplication) getApplication()).getBooks().clear();
+            ((DataBindingApplication) getApplication()).getBooks().addAll(searchResults.books);
             mBooksRecyclerAdapter.notifyDataSetChanged();
         }
     }
@@ -141,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
 
         displayProgress(false);
 
-        if (((SherlockApplication) getApplication()).getBooks() != null) {
-            ((SherlockApplication) getApplication()).getBooks().clear();
+        if (((DataBindingApplication) getApplication()).getBooks() != null) {
+            ((DataBindingApplication) getApplication()).getBooks().clear();
             if (mBooksRecyclerAdapter != null) {
                 mBooksRecyclerAdapter.notifyDataSetChanged();
             }

@@ -6,11 +6,11 @@
 
         <variable
             name="bookDetails"
-            type="org.gdghyderabad.sherlock.Binding.BookDetails" />
+            type="com.mutualmobile.example.databinding.model.BookDetails" />
 
         <variable
             name="bookDetailActivity"
-            type="org.gdghyderabad.sherlock.activity.BookDetailsActivity" />
+            type="com.mutualmobile.example.databinding.activity.BookDetailsActivity" />
 
     </data>
 

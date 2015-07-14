@@ -4,7 +4,7 @@
 
     <data>
 
-        <import type="org.gdghyderabad.sherlock.model.Book" />
+        <import type="com.mutualmobile.example.databinding.model.Book" />
 
         <variable
             name="book"

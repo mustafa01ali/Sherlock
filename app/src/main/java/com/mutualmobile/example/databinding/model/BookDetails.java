@@ -1,10 +1,10 @@
-package org.gdghyderabad.sherlock.Binding;
+package com.mutualmobile.example.databinding.model;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
-import org.gdghyderabad.sherlock.BR;
-import org.gdghyderabad.sherlock.model.VolumeInfo;
+import com.mutualmobile.example.databinding.BR;
+
 
 /**
  * Created by phanirajabhandari on 7/8/15.

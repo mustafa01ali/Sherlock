@@ -1,4 +1,4 @@
-package org.gdghyderabad.sherlock.model;
+package com.mutualmobile.example.databinding.model;
 
 import java.util.List;
 

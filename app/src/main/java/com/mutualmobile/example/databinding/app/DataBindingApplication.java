@@ -1,9 +1,9 @@
-package org.gdghyderabad.sherlock.app;
+package com.mutualmobile.example.databinding.app;
 
 import android.app.Application;
 
-import org.gdghyderabad.sherlock.BuildConfig;
-import org.gdghyderabad.sherlock.model.Book;
+import com.mutualmobile.example.databinding.BuildConfig;
+import com.mutualmobile.example.databinding.model.Book;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import timber.log.Timber;
 /**
  * Created by Mustafa Ali on 11/03/15.
  */
-public class SherlockApplication extends Application {
+public class DataBindingApplication extends Application {
     private List<Book> mBooks;
 
     @Override

@@ -1,4 +1,4 @@
-package org.gdghyderabad.sherlock.Binding;
+package com.mutualmobile.example.databinding.Binding;
 
 import android.databinding.BindingAdapter;
 import android.view.View;

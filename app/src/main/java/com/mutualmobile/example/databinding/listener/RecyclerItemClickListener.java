@@ -1,4 +1,4 @@
-package org.gdghyderabad.sherlock.listener;
+package com.mutualmobile.example.databinding.listener;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,12 +8,11 @@ import android.view.View;
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
     private OnItemClickListener mListener;
+    private GestureDetector mGestureDetector;
 
     public interface OnItemClickListener {
         void onItemClick(View view, int position, float x, float y);
     }
-
-    GestureDetector mGestureDetector;
 
     public RecyclerItemClickListener(Context context, OnItemClickListener listener) {
         mListener = listener;
