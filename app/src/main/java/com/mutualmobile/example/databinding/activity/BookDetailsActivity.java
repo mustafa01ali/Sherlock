@@ -31,11 +31,11 @@ public class BookDetailsActivity extends AppCompatActivity {
 
     public void onShowNextBook(View view) {
         mBookDetails.setIndex(++mBookPosition);
-        mBookDetails.setVolumeInfo(((DataBindingApplication) getApplication()).getBooks().get(mBookDetails.getIndex()).volumeInfo);
+        mBookDetails.setVolumeInfo(((DataBindingApplication) getApplication()).getBooks().get(mBookDetails.getIndex()).getVolumeInfo());
     }
 
     public void onShowPreviousBook(View view) {
         mBookDetails.setIndex(--mBookPosition);
-        mBookDetails.setVolumeInfo(((DataBindingApplication) getApplication()).getBooks().get(mBookDetails.getIndex()).volumeInfo);
+        mBookDetails.setVolumeInfo(((DataBindingApplication) getApplication()).getBooks().get(mBookDetails.getIndex()).getVolumeInfo());
     }
 }
