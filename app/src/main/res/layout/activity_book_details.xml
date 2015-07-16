@@ -1,0 +1,105 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="bookDetails"
+            type="com.mutualmobile.example.databinding.model.BookDetails" />
+
+        <variable
+            name="bookDetailActivity"
+            type="com.mutualmobile.example.databinding.activity.BookDetailsActivity" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/spacing_normal"
+        android:paddingLeft="@dimen/spacing_large"
+        android:paddingRight="@dimen/spacing_large"
+        android:paddingTop="@dimen/spacing_normal">
+
+        <ImageView
+            android:id="@+id/book_thumbnail_imageview"
+            android:layout_width="120dp"
+            android:layout_height="160dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="@dimen/spacing_large"
+            android:layout_marginRight="@dimen/spacing_large"
+            app:imageUrl="@{bookDetails.volumeInfo.imageLinks.thumbnail}" />
+
+        <TextView
+            android:id="@+id/book_title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/book_thumbnail_imageview"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{bookDetails.volumeInfo.title}"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"
+            tools:text="Book Title" />
+
+        <TextView
+            android:id="@+id/book_authors_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/book_title_textview"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/book_thumbnail_imageview"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{bookDetails.volumeInfo.authors[0]}"
+            android:textSize="@dimen/text_size_normal"
+            android:textStyle="italic"
+            tools:text="Author name" />
+
+        <TextView
+            android:id="@+id/book_publisher_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/book_authors_textview"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/book_thumbnail_imageview"
+            android:paddingBottom="@dimen/spacing_normal"
+            android:text="@{bookDetails.volumeInfo.publisher}"
+            android:textSize="@dimen/text_size_small"
+            tools:text="Publisher name" />
+
+        <TextView
+            android:id="@+id/book_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/book_thumbnail_imageview"
+            android:text="@{bookDetails.volumeInfo.description}" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:padding="@dimen/spacing_normal">
+
+            <Button
+                android:id="@+id/show_previous_book_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:onClick="onShowPreviousBook"
+                android:text="@string/show_prev"
+                app:visibilityOnIndex="@{bookDetails.index}" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:onClick="onShowNextBook"
+                android:text="@string/show_next" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+</layout>

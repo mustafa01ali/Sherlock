@@ -1,27 +1,29 @@
-package org.gdghyderabad.sherlock.activity;
+package com.mutualmobile.example.databinding.activity;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.gdghyderabad.sherlock.R;
-import org.gdghyderabad.sherlock.adapter.SearchResultsAdapter;
-import org.gdghyderabad.sherlock.api.GoogleBooksService;
-import org.gdghyderabad.sherlock.model.Book;
-import org.gdghyderabad.sherlock.model.SearchResults;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.mutualmobile.example.databinding.R;
+import com.mutualmobile.example.databinding.adapter.BooksRecyclerAdapter;
+import com.mutualmobile.example.databinding.api.GoogleBooksService;
+import com.mutualmobile.example.databinding.app.DataBindingApplication;
+import com.mutualmobile.example.databinding.databinding.ActivityMainBinding;
+import com.mutualmobile.example.databinding.listener.RecyclerItemClickListener;
+import com.mutualmobile.example.databinding.model.SearchResults;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -33,7 +35,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
     @InjectView(R.id.search_edit_text)
     protected EditText mSearchEditText;
@@ -41,18 +43,28 @@ public class MainActivity extends ActionBarActivity {
     @InjectView(R.id.progress_bar)
     protected ProgressBar mProgressBar;
 
-    @InjectView(R.id.search_results_list_view)
-    protected ListView mSearchResultsListView;
+    @InjectView(R.id.search_results_recycler_view)
+    protected RecyclerView mSearchResultsRecyclerView;
 
     private GoogleBooksService mGoogleBooksService;
-    private SearchResultsAdapter mAdapter;
-    private List<Book> mResultsList = new ArrayList<>();
+    private BooksRecyclerAdapter mBooksRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         ButterKnife.inject(this);
+        mSearchResultsRecyclerView = (RecyclerView) findViewById(R.id.search_results_recycler_view);
+        mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mSearchResultsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(View view, int position, float x, float y) {
+                Intent intent = new Intent(MainActivity.this, BookDetailsActivity.class);
+                intent.putExtra(BookDetailsActivity.BOOK_POSITION, position);
+                startActivity(intent);
+            }
+        }));
         init();
     }
 
@@ -111,15 +123,16 @@ public class MainActivity extends ActionBarActivity {
 
         displayProgress(false);
 
-        if (mAdapter == null) {
-            mAdapter = new SearchResultsAdapter(this, 0, searchResults.books);
-            mSearchResultsListView.setAdapter(mAdapter);
-            mResultsList = searchResults.books;
+        if (mBooksRecyclerAdapter == null) {
+            mBooksRecyclerAdapter = new BooksRecyclerAdapter(searchResults.books);
+            mSearchResultsRecyclerView.setAdapter(mBooksRecyclerAdapter);
+            //Without Binder Adapter
+            //mSearchResultsRecyclerView.setAdapter(new BooksRecyclerWithoutBinderAdapter(searchResults.books));
+            ((DataBindingApplication) getApplication()).setBooks(searchResults.books);
         } else {
-            mResultsList.clear();
-            mResultsList.addAll(searchResults.books);
-            mAdapter.notifyDataSetChanged();
-            mSearchResultsListView.setSelection(0);
+            ((DataBindingApplication) getApplication()).getBooks().clear();
+            ((DataBindingApplication) getApplication()).getBooks().addAll(searchResults.books);
+            mBooksRecyclerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -128,10 +141,10 @@ public class MainActivity extends ActionBarActivity {
 
         displayProgress(false);
 
-        if (mResultsList != null) {
-            mResultsList.clear();
-            if (mAdapter != null) {
-                mAdapter.notifyDataSetChanged();
+        if (((DataBindingApplication) getApplication()).getBooks() != null) {
+            ((DataBindingApplication) getApplication()).getBooks().clear();
+            if (mBooksRecyclerAdapter != null) {
+                mBooksRecyclerAdapter.notifyDataSetChanged();
             }
         }
         if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
@@ -143,10 +156,10 @@ public class MainActivity extends ActionBarActivity {
 
     private void displayProgress(boolean show) {
         if (show) {
-            mSearchResultsListView.setVisibility(View.GONE);
+            mSearchResultsRecyclerView.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
         } else {
-            mSearchResultsListView.setVisibility(View.VISIBLE);
+            mSearchResultsRecyclerView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
         }
     }
@@ -161,5 +174,4 @@ public class MainActivity extends ActionBarActivity {
         }
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
 }

@@ -1,6 +1,6 @@
-package org.gdghyderabad.sherlock.api;
+package com.mutualmobile.example.databinding.api;
 
-import org.gdghyderabad.sherlock.model.SearchResults;
+import com.mutualmobile.example.databinding.model.SearchResults;
 
 import retrofit.Callback;
 import retrofit.http.GET;
