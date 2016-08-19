@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mutualmobile.example.databinding.BuildConfig;
 import com.mutualmobile.example.databinding.R;
 import com.mutualmobile.example.databinding.adapter.BooksRecyclerAdapter;
 import com.mutualmobile.example.databinding.api.GoogleBooksService;
@@ -25,35 +26,39 @@ import com.mutualmobile.example.databinding.databinding.ActivityMainBinding;
 import com.mutualmobile.example.databinding.listener.RecyclerItemClickListener;
 import com.mutualmobile.example.databinding.model.SearchResults;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
-    @InjectView(R.id.search_edit_text)
+    @BindView(R.id.search_edit_text)
     protected EditText mSearchEditText;
 
-    @InjectView(R.id.progress_bar)
+    @BindView(R.id.progress_bar)
     protected ProgressBar mProgressBar;
 
-    @InjectView(R.id.search_results_recycler_view)
+    @BindView(R.id.search_results_recycler_view)
     protected RecyclerView mSearchResultsRecyclerView;
 
     private GoogleBooksService mGoogleBooksService;
+
     private BooksRecyclerAdapter mBooksRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityMainBinding activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         mSearchResultsRecyclerView = (RecyclerView) findViewById(R.id.search_results_recycler_view);
         mSearchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mSearchResultsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
@@ -83,11 +88,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("https://www.googleapis.com")
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.googleapis.com")
+                .client(provideOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        mGoogleBooksService = restAdapter.create(GoogleBooksService.class);
+        mGoogleBooksService = retrofit.create(GoogleBooksService.class);
+    }
+
+    private OkHttpClient provideOkHttpClient() {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            builder.addInterceptor(httpLoggingInterceptor);
+        }
+        return builder.build();
     }
 
     private void handleSearchRequest() {
@@ -102,20 +118,18 @@ public class MainActivity extends AppCompatActivity {
     private void searchBooksByQuery(String query) {
         hideKeyboard();
         displayProgress(true);
-        mGoogleBooksService.search(query, mSearchResultsCallback);
+        mGoogleBooksService.search(query).enqueue(new Callback<SearchResults>() {
+            @Override
+            public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
+                displayResults(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<SearchResults> call, Throwable t) {
+                displayError(t);
+            }
+        });
     }
-
-    private Callback<SearchResults> mSearchResultsCallback = new Callback<SearchResults>() {
-        @Override
-        public void success(SearchResults searchResults, Response response) {
-            displayResults(searchResults);
-        }
-
-        @Override
-        public void failure(RetrofitError error) {
-            displayError(error);
-        }
-    };
 
     private void displayResults(SearchResults searchResults) {
         Timber.d("Total search results: " + searchResults.totalItems);
@@ -136,8 +150,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void displayError(RetrofitError error) {
-        Timber.e("Search failed with error: " + error.getKind());
+    private void displayError(Throwable error) {
+        Timber.e("Search failed with error: " + error.getMessage());
 
         displayProgress(false);
 
@@ -147,11 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 mBooksRecyclerAdapter.notifyDataSetChanged();
             }
         }
-        if (error.getKind().equals(RetrofitError.Kind.NETWORK)) {
-            Toast.makeText(this, getString(R.string.msg_error_network), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, getString(R.string.msg_error_generic), Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(this, getString(R.string.msg_error_generic), Toast.LENGTH_LONG).show();
     }
 
     private void displayProgress(boolean show) {
