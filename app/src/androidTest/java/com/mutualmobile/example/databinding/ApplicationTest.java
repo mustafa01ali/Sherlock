@@ -1,4 +1,4 @@
-package org.gdghyderabad.sherlock;
+package com.mutualmobile.example.databinding;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
