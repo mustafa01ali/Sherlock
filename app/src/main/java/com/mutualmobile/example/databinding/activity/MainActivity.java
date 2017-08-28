@@ -32,11 +32,12 @@ import butterknife.OnClick;
 import butterknife.OnEditorAction;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 .baseUrl("https://www.googleapis.com")
                 .client(provideOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         mGoogleBooksService = retrofit.create(GoogleBooksService.class);
     }
@@ -118,17 +120,26 @@ public class MainActivity extends AppCompatActivity {
     private void searchBooksByQuery(String query) {
         hideKeyboard();
         displayProgress(true);
-        mGoogleBooksService.search(query).enqueue(new Callback<SearchResults>() {
-            @Override
-            public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
-                displayResults(response.body());
-            }
 
-            @Override
-            public void onFailure(Call<SearchResults> call, Throwable t) {
-                displayError(t);
-            }
-        });
+        mGoogleBooksService.searchObservable(query)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<SearchResults>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(SearchResults searchResults) {
+                        displayResults(searchResults);
+                    }
+                });
     }
 
     private void displayResults(SearchResults searchResults) {
